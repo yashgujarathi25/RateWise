@@ -94,7 +94,7 @@ public class User extends BaseEntity{
 	
 	@ElementCollection
 	@CollectionTable(name = "payment_cards", joinColumns = @JoinColumn(name = "user_id"))
-	@JsonManagedReference
+	//@JsonManagedReference
 	private List<PaymentCard> paymentCards = new ArrayList<PaymentCard>();
 	
 	

@@ -206,4 +206,27 @@ public class AdminController {
 		Boolean active = true;
 		return userSer.getAllActiveUser(active);
 	}
+	
+	@GetMapping("/user/premium")
+	public List<UserSpecificResponse> premiumUser(){
+		Boolean active = true;
+		return userSer.getAllPremiumUser(active);
+	}
+	
+	@PostMapping(value = "/addWholeContent",consumes = "multipart/form-data")
+	public ResponseEntity<?> addWholeContent(@RequestParam String contentName,
+												 @RequestParam ContentType type,
+												 @RequestParam double length,
+												 @RequestParam String genre,
+												 @RequestParam List<Integer> artistId,
+												 @RequestParam MultipartFile file) throws IOException
+	{
+		return new ResponseEntity<>(contentSer.addWholeContent(contentName,type,length,genre, artistId,file), HttpStatus.CREATED);
+	}
+	
+	
+	@PostMapping("/addArtistToContent/{conId}")
+	public ResponseEntity<?> addArtistToContent(@PathVariable Integer conId, @RequestParam List<Integer> artistId){
+		return ResponseEntity.ok(contentSer.addArtistToContent(conId,artistId));
+	}
 }

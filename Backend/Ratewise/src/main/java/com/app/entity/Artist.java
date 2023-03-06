@@ -2,6 +2,7 @@ package com.app.entity;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -25,7 +26,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "artist")
 
-public class Artist  extends BaseEntity{
+public class Artist extends BaseEntity {
 
 	@Column(length = 30)
 	private String firstName;
@@ -34,14 +35,14 @@ public class Artist  extends BaseEntity{
 	@Column(length = 10)
 	@Enumerated(EnumType.STRING)
 	private Gender gender;
-	
+
 	@Column(length = 30)
 	@Enumerated(EnumType.STRING)
 	private ArtistsType art_Type;
 	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "artists")
 	@JsonIgnore
-	private Set<Content> contents= new HashSet<Content>();
-	
+	private Set<Content> contents = new HashSet<Content>();
+
 	public Artist() {
 		// TODO Auto-generated constructor stub
 	}
@@ -93,7 +94,31 @@ public class Artist  extends BaseEntity{
 	public void setContents(Set<Content> contents) {
 		this.contents = contents;
 	}
+
+	@Override
+	public String toString() {
+		return "Artist [firstName=" + firstName + ", lastName=" + lastName + ", gender=" + gender + ", art_Type="
+				+ art_Type + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(art_Type, firstName, gender, lastName);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Artist other = (Artist) obj;
+		return art_Type == other.art_Type && Objects.equals(firstName, other.firstName) && gender == other.gender
+				&& Objects.equals(lastName, other.lastName);
+	}
 	
 	
-	
+
 }

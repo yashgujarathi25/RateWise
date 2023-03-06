@@ -1,0 +1,42 @@
+package com.app.service;
+
+import javax.transaction.Transactional;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.app.dto.ContentDto;
+import com.app.entity.Content;
+import com.app.repository.ContentRepository;
+
+@Service
+@Transactional
+public class ContentServiceImpl implements ContentService {
+
+	@Autowired
+	private ModelMapper mapper;
+	
+	@Autowired
+	private ContentRepository contentRepo;
+	
+	@Override
+	public Content addContent(ContentDto newContent) {
+		// TODO Auto-generated method stub
+		Content content = mapper.map(newContent, Content.class);
+		return contentRepo.save(content);
+	}
+
+	@Override
+	public String delContent(Integer id) {
+		String mesg = "Deletion Failed....!!!!";
+		if(contentRepo.existsById(id)) {
+			contentRepo.deleteById(id);
+			mesg = "Deletion Successfull....!!!!";
+		}
+		return mesg;
+	}
+	
+	
+
+}

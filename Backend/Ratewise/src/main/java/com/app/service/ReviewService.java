@@ -16,4 +16,6 @@ public interface ReviewService {
 
 	ReviewDto addReview(ReviewDto newRev, Integer userId, Integer conId);
 
+	ReviewDto updateReview(ReviewDto revDto);
+
 }

@@ -1,0 +1,100 @@
+package com.app.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.app.dto.ApiResponse;
+import com.app.dto.ArtistDto;
+import com.app.dto.ContentDto;
+import com.app.entity.Admin;
+import com.app.entity.Artist;
+import com.app.entity.Content;
+import com.app.service.AdminService;
+import com.app.service.ArtistService;
+import com.app.service.CommentService;
+import com.app.service.ContentService;
+import com.app.service.ReviewService;
+import com.app.service.UserService;
+
+import io.swagger.v3.oas.models.security.SecurityScheme.In;
+
+@RestController
+@RequestMapping("/admin")
+public class AdminController {
+
+	@Autowired
+	private UserService userSer;
+	
+	@Autowired
+	private CommentService commentSer;
+	
+	@Autowired
+	private AdminService adminSer;
+	
+	@Autowired
+	private ContentService contentSer;
+	
+	@Autowired
+	private ReviewService reviewSer;
+	
+	@Autowired
+	private ArtistService artistSer;
+	
+	@GetMapping
+	public List<Admin> getAllAdmin(){
+		return adminSer.getAllAdmin();
+	}
+	
+	@PostMapping
+	public Admin addAdmin(@RequestBody Admin newAdmin) {
+		return adminSer.addAdmin(newAdmin);
+	}
+	
+	
+	@PostMapping("/addcontent")
+	public Content addContent(@RequestBody ContentDto newContent) {
+		return contentSer.addContent(newContent);
+	}
+	
+	@PostMapping("/addartist")
+	public Artist addArtist(@RequestBody ArtistDto newArtist) {
+		return artistSer.addArtist(newArtist);
+	}
+	
+	@DeleteMapping("/delcontent/{id}")
+	public ApiResponse deleteContent(@PathVariable Integer id) {
+		return new ApiResponse(contentSer.delContent(id));
+	}
+	
+
+	@DeleteMapping("/deluser/{id}")
+	public ApiResponse deleteUser(@PathVariable Integer id) {
+		return new ApiResponse(userSer.deleteUserDetails(id));
+	}
+	
+	@DeleteMapping("/delreview/{id}")
+	public ApiResponse deleteReview(@PathVariable Integer id) {
+		return new ApiResponse(reviewSer.delreview(id));
+	}
+	
+	@DeleteMapping("/delcomment/{id}")
+	public ApiResponse deleteComment(@PathVariable Integer id) {
+		return new ApiResponse(commentSer.delcomment(id));
+	}
+	
+	@DeleteMapping("/delartist/{id}")
+	public ApiResponse deleteArtist(@PathVariable Integer id) {
+		return new ApiResponse(artistSer.delartist(id));
+	}
+	
+	
+	
+}

@@ -1,0 +1,32 @@
+package com.app.service;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.app.repository.ArtistRepository;
+
+@Service
+@Transactional
+public class ArtistServiceImpl implements ArtistService {
+
+	@Autowired
+	private ArtistRepository artistRepo;
+	
+	public ArtistServiceImpl() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	@Override
+	public String delartist(Integer id) {
+		String mesg = "Artist Deletion Failed...!!!";
+		if(artistRepo.existsById(id))
+		{
+			artistRepo.deleteById(id);
+			mesg = "Artist Deletion Successfull...!!!";
+		}
+		return mesg;
+	}
+
+}

@@ -1,0 +1,12 @@
+package com.app.service;
+
+import com.app.dto.ContentDto;
+import com.app.entity.Content;
+
+public interface ContentService {
+
+	Content addContent(ContentDto newContent);
+
+	String delContent(Integer id);
+
+}

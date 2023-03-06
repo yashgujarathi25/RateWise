@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.app.dto.ApiResponse;
 import com.app.dto.ContentDto;
+import com.app.dto.ContentSpecificResponse;
 import com.app.entity.Content;
 import com.app.entity.ContentType;
 
@@ -28,5 +29,22 @@ public interface ContentService {
 	Content updateContent(ContentDto dto);
 
 	Optional<Content> findContentById(Integer id);
+
+	List<ContentSpecificResponse> fetchByContentName(String cname);
+
+	List<ContentSpecificResponse> fetchContentByKey(String key);
+
+	List<ContentSpecificResponse> sortByRatingAsc();
+
+	List<ContentSpecificResponse> sortByRatingDesc();
+
+	List<ContentSpecificResponse> getContentByRateRange(double minRate, double maxRate);
+
+	Content addWholeContent(String contentName, ContentType type, double length, String genre, List<Integer> artistId,
+			MultipartFile file) throws IOException;
+
+	Content addArtistToContent(Integer conId, List<Integer> artistId);
+
+	List<ContentSpecificResponse> fetchContentByType(ContentType conType);
 
 }

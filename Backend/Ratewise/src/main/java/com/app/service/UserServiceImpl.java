@@ -73,6 +73,13 @@ public class UserServiceImpl implements UserService {
 		return mapper.map(userRepo.save(user) ,UserSpecificResponse.class);
 	}
 
+	@Override
+	public List<UserSpecificResponse> getAllPremiumUser(Boolean active) {
+		return userRepo.findByPremium(active).stream()
+				.map(u -> mapper.map(u, UserSpecificResponse.class))
+				.collect(Collectors.toList());
+	}
+
 		
 	
 

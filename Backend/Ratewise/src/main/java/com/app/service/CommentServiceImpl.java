@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.app.custom_exception.ResourceAddingFailedException;
 import com.app.custom_exception.ResourceNotFoundException;
 import com.app.dto.CommentDto;
+import com.app.dto.ReviewDto;
 import com.app.entity.Comment;
 import com.app.entity.Content;
 import com.app.entity.Review;
@@ -69,6 +70,18 @@ public class CommentServiceImpl implements CommentService {
 			return mapper.map(commentRepo.save(comment), CommentDto.class);
 		}
 		throw new ResourceAddingFailedException("Comment Adding Failed..!!!");
+	}
+
+	@Override
+	public CommentDto updateComment(CommentDto dto) {
+		Comment comment = commentRepo.findById(dto.getId()).orElseThrow(() -> new ResourceNotFoundException("Comment Not Found"));
+		if(comment != null) {
+			comment.setText(dto.getText());
+			comment.setTimestamp(dto.getTimestamp());
+			return mapper.map(commentRepo.save(comment), CommentDto.class);
+		}
+		throw new ResourceAddingFailedException("Failed to Update Review..!!");
+		
 	}
 
 }

@@ -1,0 +1,98 @@
+package com.app.entity;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
+
+import org.aspectj.weaver.tools.Trace;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Entity
+@Table(name = "user")
+@NoArgsConstructor 
+@Getter 
+@Setter
+@ToString(exclude = "password")
+@AllArgsConstructor
+public class User extends BaseEntity{
+
+	@NotBlank(message = "First name can't be blank")
+	@Length(min=4,max=20,message = "Invalid first name!!!!!!")
+	@Column(name = "first_name", length = 20)
+	private String firstNAme;
+	@NotBlank(message = "Last  name can't be blank")
+	@Column(name = "last_name", length = 20)
+	private String lastName;
+	@Column
+	private LocalDate dob;
+	@Column(length = 10)
+	@Enumerated(EnumType.STRING)
+	private Gender gender;
+	@Column(length = 20, unique = true)
+	@Email(message = "Invalid email format")
+	private String email;
+	@Column(length = 20)
+	@Pattern(regexp = "((?=.*\\d)(?=.*[a-z])(?=.*[#@$*]).{5,20})",message = "Invalid Password !")
+	
+	private String password;
+	
+	@Column
+	private Boolean  premium;
+	
+	@NotNull(message = "Reg Date must be supplied")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@Past(message = "Invalid Date!")
+	private LocalDate regDate;
+	
+	@UpdateTimestamp
+	private LocalDate lastLogin;
+	
+	@Column
+	private Boolean isActive = true;
+	
+	@OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
+	private List<Review> reviews;
+	
+	
+	@OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
+	private List<Payment> payments;
+	
+	@Embedded
+	private PaymentCard card;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}

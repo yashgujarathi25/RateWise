@@ -23,4 +23,6 @@ public interface UserService {
 	UserSpecificResponse loginUser(LoginDto dto);
 
 	UserSpecificResponse updateUserDetails(UserDto dto);
+
+	List<UserSpecificResponse> getAllPremiumUser(Boolean active);
 }

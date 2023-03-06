@@ -5,8 +5,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
@@ -20,8 +23,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.app.custom_exception.ResourceNotFoundException;
 import com.app.dto.ApiResponse;
 import com.app.dto.ContentDto;
+import com.app.dto.ContentSpecificResponse;
+import com.app.entity.Artist;
 import com.app.entity.Content;
 import com.app.entity.ContentType;
+import com.app.repository.ArtistRepository;
 import com.app.repository.ContentRepository;
 
 @Service
@@ -36,6 +42,9 @@ public class ContentServiceImpl implements ContentService {
 	
 	@Autowired
 	private ContentRepository contentRepo;
+	
+	@Autowired
+	private ArtistRepository artistRepo;
 	
 	@PostConstruct
 	public void myInit() {
@@ -149,7 +158,114 @@ public class ContentServiceImpl implements ContentService {
 	@Override
 	public Optional<Content> findContentById(Integer id) {
 		return contentRepo.findById(id);
+	}
+
+	@Override
+	public List<ContentSpecificResponse> fetchByContentName(String cname) {
+		// TODO Auto-generated method stub
+		return contentRepo.findByName(cname)
+				.stream()
+				.map(c -> mapper.map(c, ContentSpecificResponse.class))
+				.collect(Collectors.toList());
+	}
+
+
+
+
+	@Override
+	public List<ContentSpecificResponse> fetchContentByKey(String key) {
+		// TODO Auto-generated method stub
+		return contentRepo.findByNameContaining(key)
+				.stream()
+				.map(c -> mapper.map(c, ContentSpecificResponse.class))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ContentSpecificResponse> sortByRatingAsc() {
+		return contentRepo.findAllByOrderByAvgRatingAsc()
+				.stream()
+				.map(c -> mapper.map(c, ContentSpecificResponse.class))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ContentSpecificResponse> sortByRatingDesc() {
+		return contentRepo.findAllByOrderByAvgRatingDesc()
+				.stream()
+				.map(c -> mapper.map(c, ContentSpecificResponse.class))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ContentSpecificResponse> getContentByRateRange(double minRate, double maxRate) {
+		return contentRepo.findByAvgRatingBetween(minRate,maxRate)
+				.stream()
+				.map(c -> mapper.map(c, ContentSpecificResponse.class))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public Content addWholeContent(String contentName, ContentType type, double length, String genre,
+			List<Integer> artistId, MultipartFile file) throws IOException {
+		Content newContent = new Content();
+		newContent.setName(contentName);
+		newContent.setType(type);
+		newContent.setLength(length);
+		newContent.setGenre(genre);
+		contentRepo.save(newContent);
+		String targetPath = folderName + File.separator + file.getOriginalFilename();
+		System.out.println(targetPath);
+		// copy image file contents to the specified path
+		Files.copy(file.getInputStream(), Paths.get(targetPath), StandardCopyOption.REPLACE_EXISTING);
+		//OR for DB
+		/*
+		 * Emp entity :Add @Lob private  byte[] contents; emp.setContents(imageFile.getBytes());
+		 */
+		// => success
+		// save image path in DB
+		newContent.setPosterLink(targetPath);
+		
+		Set<Artist> artistSet = new HashSet<Artist>();
+		for(Integer artId : artistId) {
+			Artist artist = artistRepo.findById(artId).orElseThrow(() -> new ResourceNotFoundException("Artist Not Found With this Id"));
+			
+			artistSet.add(artist); 
+		}
+		
+		newContent.getArtists().addAll(artistSet);
+		return newContent;
+	}
+
+
+
+
+	@Override
+	public Content addArtistToContent(Integer conId, List<Integer> artistId) {
+		Content content = contentRepo.findById(conId).orElseThrow(() -> new ResourceNotFoundException("Content Not Found with this Id"));
+		Set<Artist> artists = new HashSet<Artist>();
+		if(content != null) {
+			for(Integer artId : artistId) {
+				Artist artist = artistRepo.findById(artId).orElseThrow(() -> new ResourceNotFoundException("Artist Not Found With this Id"));	
+				artists.add(artist); 
+			}
+		}
+		content.getArtists().addAll(artists);
+		return content;
+	}
+
+
+
+
+	@Override
+	public List<ContentSpecificResponse> fetchContentByType(ContentType conType) {
+		return contentRepo.findByType(conType)
+				.stream()
+				.map(c -> mapper.map(c, ContentSpecificResponse.class))
+				.collect(Collectors.toList());
 	} 
+	
+	
 	
 	
 	

@@ -1,0 +1,27 @@
+package com.app.dto;
+
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+
+import com.app.entity.ArtistsType;
+import com.app.entity.BaseEntity;
+import com.app.entity.Gender;
+
+public class ArtistDto  extends BaseEntity{
+
+	@Column(length = 30)
+	private String firstName;
+	
+	@Column(length = 30)
+	private String lastName;
+	
+	@Column(length = 10)
+	@Enumerated(EnumType.STRING)
+	private Gender gender;
+	
+	@Column(length = 30)
+	@Enumerated(EnumType.STRING)
+	private ArtistsType art_Type;
+	
+}

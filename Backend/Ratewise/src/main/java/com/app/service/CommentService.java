@@ -17,4 +17,6 @@ public interface CommentService {
 
 	CommentDto addComment(CommentDto newComment, Integer userId, Integer revId);
 
+	CommentDto updateComment(CommentDto dto);
+
 }

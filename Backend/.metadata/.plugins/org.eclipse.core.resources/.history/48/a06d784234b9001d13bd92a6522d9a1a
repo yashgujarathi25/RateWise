@@ -1,0 +1,7 @@
+package com.app.service;
+
+public interface CommentService {
+
+	String delcomment(Integer id);
+
+}

@@ -1,6 +1,7 @@
 package com.app.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -53,9 +54,9 @@ public class Review  extends BaseEntity{
 	@JsonBackReference
 	private Content content;
 	
-	@OneToMany(mappedBy = "review", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "review", orphanRemoval = true, cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
 	@JsonManagedReference
-	private List<Comment> comments;
+	private List<Comment> comments= new ArrayList<Comment>();
 	
 	public Review() {
 		// TODO Auto-generated constructor stub

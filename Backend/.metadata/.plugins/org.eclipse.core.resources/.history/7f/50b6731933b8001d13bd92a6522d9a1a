@@ -1,0 +1,22 @@
+package com.app.entity;
+
+import java.time.LocalDate;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.validator.constraints.CodePointLength;
+
+@Entity
+@Table(name = "payment")
+public class Payment extends BaseEntity{
+
+	private double amount;
+	
+	@UpdateTimestamp
+	private LocalDate transactionDate;
+	
+	
+}

@@ -1,6 +1,9 @@
 package com.app.entity;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -15,6 +18,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
 import lombok.AllArgsConstructor;
@@ -44,16 +49,30 @@ public class Content extends BaseEntity{
 	@Column
 	private String genre;
 	
+	@Column(columnDefinition = "default 0")
+	@JsonProperty(access = Access.READ_ONLY)
+	private double avgRating;
+	
+	public double getAvgRating() {
+		return avgRating;
+	}
+
+
+	public void setAvgRating(double avgRating) {
+		this.avgRating = avgRating;
+	}
+
+
 	@OneToMany(mappedBy = "content", orphanRemoval = true, cascade = CascadeType.ALL)
 	@JsonManagedReference
-	private List<Review> reviews;
+	private List<Review> reviews = new ArrayList<Review>();
 	
 	
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "content_artist",
 	joinColumns = {@JoinColumn(name = "content_id" )},
 	inverseJoinColumns = {@JoinColumn(name = "artist_id")})
-	private Set<Artist> artists;
+	private Set<Artist> artists = new HashSet<Artist>();
 	
 	
 	public Content() {
@@ -137,6 +156,35 @@ public class Content extends BaseEntity{
 
 	public void setArtists(Set<Artist> artists) {
 		this.artists = artists;
+	}
+
+
+	@Override
+	public String toString() {
+		return "Content [type=" + type + ", name=" + name + ", posterLink=" + posterLink + ", length=" + length
+				+ ", genre=" + genre + ", avgRating=" + avgRating + "]";
+	}
+
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(avgRating, genre, length, name, posterLink, type);
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Content other = (Content) obj;
+		return Double.doubleToLongBits(avgRating) == Double.doubleToLongBits(other.avgRating)
+				&& Objects.equals(genre, other.genre) && Objects.equals(length, other.length)
+				&& Objects.equals(name, other.name) && Objects.equals(posterLink, other.posterLink)
+				&& type == other.type;
 	}
 	
 	

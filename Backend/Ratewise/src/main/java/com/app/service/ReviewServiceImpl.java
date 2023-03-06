@@ -79,5 +79,21 @@ public class ReviewServiceImpl implements ReviewService {
 		
 	}
 
+
+	@Override
+	public ReviewDto updateReview(ReviewDto revDto) {
+		Review review = reviewRepo.findById(revDto.getId()).orElseThrow(() -> new ResourceNotFoundException("Review Not Found"));
+		if(review != null) {
+			review.setTitle(revDto.getTitle());
+			review.setReview(revDto.getReview());
+			review.setRating(revDto.getRating());
+			review.setTimestamp(revDto.getTimestamp());
+			return mapper.map(reviewRepo.save(review), ReviewDto.class);
+		}
+		throw new ResourceAddingFailedException("Failed to Update Review..!!");
+		
+		
+	}
+
 	
 }
