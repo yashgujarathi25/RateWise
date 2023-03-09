@@ -49,7 +49,7 @@ public class Content extends BaseEntity{
 	@Column
 	private String genre;
 	
-	@Column(columnDefinition = "default 0")
+	@Column(columnDefinition = "double default 0")
 	@JsonProperty(access = Access.READ_ONLY)
 	private double avgRating;
 	
